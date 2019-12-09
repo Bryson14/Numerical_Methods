@@ -81,6 +81,28 @@ class Tree:
 		else:
 			return self.smallest(node.right)
 
+	def lca(self, v1, v2):
+		return self.lca_recur(self.__root, v1, v2)
+
+	def lca_recur(self, root, v1, v2):
+		if root.value < v1 and root.value < v1:
+			return self.lca_recur(root.right, v1, v2)
+		elif root.value > v1 and root.value > v2:
+			return self.lca_recur(root.left, v1, v2)
+		else:
+			return root
+
+	def checkBST(self, root):
+		if root is None or (root.right is None and root.left is None):
+			return True
+		elif root.right is None and root.data > root.left.data:
+			return checkBST(root.left)
+		elif root.left is None and root.data < root.right.data:
+			return checkBST(root.right)
+		elif root.data < root.right.data and root.data > root.left.data:
+			return checkBST(root.left) and checkBST(root.right)
+		else:
+			return False
 
 
 class Node:
@@ -90,9 +112,15 @@ class Node:
 		self.left = None
 		self.right = None
 
+	def __str__(self):
+		if self.parent is  None:
+			return "{} [{}]".format(self.value, "None")
+		else:
+			return "{} [{}]".format(self.value, self.parent.value)
+
 
 inOrderTraverse = [50, 30, 70, 10, 40, 60, 90, 20, 80]
 my_tree = Tree(inOrderTraverse)
-print(my_tree.pop(), ": popped")
+# print(my_tree.pop(), ": popped")
 print(my_tree.to_string())
-
+print(my_tree.lca(30, 80))
