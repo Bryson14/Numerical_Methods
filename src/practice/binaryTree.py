@@ -92,18 +92,6 @@ class Tree:
 		else:
 			return root
 
-	def checkBST(self, root):
-		if root is None or (root.right is None and root.left is None):
-			return True
-		elif root.right is None and root.data > root.left.data:
-			return checkBST(root.left)
-		elif root.left is None and root.data < root.right.data:
-			return checkBST(root.right)
-		elif root.data < root.right.data and root.data > root.left.data:
-			return checkBST(root.left) and checkBST(root.right)
-		else:
-			return False
-
 
 class Node:
 	def __init__(self, value: int, parent):

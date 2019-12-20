@@ -16,7 +16,7 @@ class BlackWhiteGrid:
 		print(arr.shape)
 		height, width = arr.shape[0], arr.shape[1]
 		winHeight, winWidth = 600, 900
-		square_width, square_height = winWidth // width//2, winHeight // height//2
+		square_width, square_height = winWidth // width, winHeight // height
 
 		for i in range(height):
 			for j in range(width):
