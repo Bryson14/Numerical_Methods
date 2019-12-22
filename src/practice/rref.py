@@ -17,19 +17,21 @@ def rref(arr):
 	return arr
 
 
+# TODO write a test class for get pivot. but it seems to work
 def get_pivot(arr, col:int, completed_rows)->int:
 	# return -1 if entire col is already zero
 	# else return the row that will be the next pivot
 
 	try:
-		for row in arr.shape[0]:
+		for row in range(arr.shape[0]):
 			val = arr[completed_rows][col]
 			if val != 0:
 				return completed_rows
+			completed_rows += 1
 
 	except IndexError:
 		return -1
-	return completed_rows
+	return -1
 
 
 def zero_col(arr, pivot_col, pivot):
@@ -38,7 +40,8 @@ def zero_col(arr, pivot_col, pivot):
 
 a = np.array([
 	[1, 2, 3],
-	[2, 4, 1]
+	[0, 4, 1],
+	[8, 5, 4]
 ])
 
-print(a[2][2])
+print(get_pivot(a,0,1))
