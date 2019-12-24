@@ -1,6 +1,6 @@
 from unittest import TestCase
 import numpy as np
-from .rref import get_pivot
+from .rref import get_pivot, zero_col
 
 
 class test_get_pivot(TestCase):
@@ -12,8 +12,8 @@ class test_get_pivot(TestCase):
 		])
 		b = np.array([
 			[0, 2, 3],
-			[4, 5, 6],
-			[7, 8, 9]
+			[4, 5, 0],
+			[7, 8, 0]
 		])
 		c = np.array([
 			[-1, 0, 3],
@@ -35,6 +35,7 @@ class test_get_pivot(TestCase):
 		assert get_pivot(a, 2, 2) == 2
 		assert get_pivot(b, 0, 0) == 1
 		assert get_pivot(b, 0, 1) == 1
+		assert get_pivot(b, 2, 1) == -1
 		assert get_pivot(c, 0, 0) == 0
 		assert get_pivot(c, 1, 0) == 1
 		assert get_pivot(d, 1, 0) == -1
