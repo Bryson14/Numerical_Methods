@@ -58,18 +58,4 @@ def zero_col(arr, pivot_col, pivot):
 
 	return arr
 
-
-a = np.array([
-	[1, 2, 3, 4],
-	[1, 2, 3, 4],
-	[5, 0, 4, 7]
-])
-
-f = np.array([
-	[2, 1, 4],
-	[4, 5, 1]
-])
-
-print(rref(a))
-
-
+# TODO now give the option to keep fractions

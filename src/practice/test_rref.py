@@ -1,6 +1,6 @@
 from unittest import TestCase
 import numpy as np
-from .rref import get_pivot, zero_col
+from .rref import get_pivot
 
 
 class test_get_pivot(TestCase):
