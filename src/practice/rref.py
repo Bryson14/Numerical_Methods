@@ -3,17 +3,23 @@ import numpy as np
 
 def rref(arr):
 	arr = np.array(arr, "float")
-	small = min(arr.shape)
+	big = max(arr.shape)
 	completed_rows = 0
 	pivot_col = 0
 
-	while completed_rows < small:
+	for i in range(big):
 		# make sure pivot row  and col is not zero or else swap
 		pivot = get_pivot(arr, pivot_col, completed_rows)
 		if pivot != -1:
-			arr = zero_col(arr, pivot_col, pivot)
+
+			# row swap to get a nice diagonal of one's
+			if completed_rows != pivot:
+				arr[[completed_rows, pivot]] = arr[[pivot, completed_rows]]
+
+			arr = zero_col(arr, pivot_col, completed_rows)
 			completed_rows += 1
 
+		# denotes a column of zeros
 		else:
 			pass
 
@@ -54,9 +60,9 @@ def zero_col(arr, pivot_col, pivot):
 
 
 a = np.array([
-	[1, 2, 3],
-	[0, 4, 1],
-	[8, 5, 4]
+	[1, 2, 3, 4],
+	[1, 2, 3, 4],
+	[5, 0, 4, 7]
 ])
 
 f = np.array([
@@ -64,7 +70,6 @@ f = np.array([
 	[4, 5, 1]
 ])
 
-# assert zero_col(f, 0, 0) == np.array([1, 1], [0, 1])
-print(rref(f))
+print(rref(a))
 
 
