@@ -1,8 +1,10 @@
 import numpy as np
+from fractions import Fraction
+from decimal import Decimal
 
 
 def rref(arr):
-	arr = np.array(arr, "float")
+	arr = np.array(arr, np.float)
 	big = max(arr.shape)
 	completed_rows = 0
 	pivot_col = 0
@@ -47,15 +49,32 @@ def get_pivot(arr, col:int, completed_rows)->int:
 def zero_col(arr, pivot_col, pivot):
 	# dividing everything py the pivot
 	arr[pivot] = arr[pivot] / arr[pivot][pivot_col]
-	pivot_value = arr[pivot][pivot_col]
 
 	for row in range(arr.shape[0]):
 		if row == pivot:
 			pass
 		else:
 			row_value = arr[row][pivot_col]
-			arr[row] = pivot_value * arr[row] - row_value * arr[pivot]
+			arr[row] = arr[row] - row_value * arr[pivot]
 
 	return arr
 
-# TODO now give the option to keep fractions
+
+def to_fraction(arr):
+	arr = arr.astype('object')
+	for row in range(arr.shape[0]):
+		for col in range(arr.shape[1]):
+			arr[row][col] = Fraction(arr[row][col])
+	return arr
+
+
+a = [np.random.randint(0, 25, 6) for i in range(5)]
+a = np.array(a)
+print(a)
+print(rref(a))
+
+b = np.array([
+	[-1,1,8],
+	[-1,0,15],
+])
+print(rref(b))
