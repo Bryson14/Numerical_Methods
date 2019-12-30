@@ -1,5 +1,6 @@
 from pathlib import Path
 import numpy as np
+import math
 
 
 class Sudoku:
@@ -10,6 +11,7 @@ class Sudoku:
 			self.size = board_size
 		else:
 			self.size = 9
+		self.chunk_size = int(math.sqrt(self.size))
 		self.board = []
 		self.create_board()
 		self.solution = self.board.copy()
@@ -31,8 +33,28 @@ class Sudoku:
 		# backtracking algorithm
 		pass
 
-	def is_valid(self, r_idx, c_idx):
-		pass
+	# works for prechecking a move. Makes sure a certain number doesn't already exist in a blocking space
+	def is_valid(self, value, r_idx, c_idx):
+
+		if value in self.board[:, c_idx] or value in self.board[r_idx]:
+			return False
+
+
+		# refers to which third, or part of the board the value is in. If the board is not
+		# the traditional 3x3, then it may be of another size
+		v_part = r_idx//self.chunk_size
+		h_part = c_idx//self.chunk_size
+
+		start_row = v_part*self.chunk_size
+		end_row = start_row + self.chunk_size
+		start_col = h_part * self.chunk_size
+		end_col =start_col + self.chunk_size
+
+		if value in self.board[start_row:end_row, start_col:end_col]:
+			return False
+
+		else:
+			return True
 
 
 file_name = Path.joinpath(Path.cwd(), "sudoku_boards.txt")

@@ -74,7 +74,7 @@ print(a)
 print(rref(a))
 
 b = np.array([
-	[-1,1,8],
-	[-1,0,15],
+	[-1, 1, 8],
+	[-1, 0, 15],
 ])
 print(rref(b))
