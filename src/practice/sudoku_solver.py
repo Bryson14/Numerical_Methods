@@ -110,8 +110,6 @@ except ValueError as e:
 	print(e)
 
 
-for i in range(5):
-	puzzles[i].solve()
-	print(puzzles[i].solution)
-	print()
+puzzles[6].solve()
+print(puzzles[6].solution)
 
