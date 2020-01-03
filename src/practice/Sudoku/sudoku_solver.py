@@ -84,32 +84,38 @@ class Sudoku:
 			return True
 
 
-file_name = Path.joinpath(Path.cwd(), "sudoku_boards.txt")
+class AllBoards:
+	def __init__(self):
 
-puzzles = []
-puzzle_str = ""
-try:
-	with open(file_name) as data:
-		lines = 0
-		for line in data.readlines():
-			if line == "\n":
-				pass
-			elif len(line) < 5:
-				size = int(line)
-			else:
-				# line of data
-				puzzle_str += line
-				lines += 1
-				if lines >= size:
-					puzzles.append(Sudoku(puzzle_str, size))
-					puzzle_str = ""
-					lines = 0
+		file_name = Path.joinpath(Path.cwd(), "sudoku_boards.txt")
 
-except ValueError as e:
-	print("uh oh")
-	print(e)
+		self.puzzles = []
+		puzzle_str = ""
+		try:
+			with open(file_name) as data:
+				lines = 0
+				for line in data.readlines():
+					if line == "\n":
+						pass
+					elif len(line) < 5:
+						size = int(line)
+					else:
+						# line of data
+						puzzle_str += line
+						lines += 1
+						if lines >= size:
+							self.puzzles.append(Sudoku(puzzle_str, size))
+							puzzle_str = ""
+							lines = 0
+
+		except ValueError as e:
+			print("uh oh")
+			print(e)
 
 
-puzzles[6].solve()
-print(puzzles[6].solution)
+		for i in range(len(self.puzzles)):
+			self.puzzles[i].solve()
 
+
+a = AllBoards()
+print(a.puzzles[1].solution)
