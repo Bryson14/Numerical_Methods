@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def height(t, sysout=False):
+def height(t, sys_out=False):
+	# throws exception for input that is not a float type
 	try:
 		t = float(t)
 	except ValueError:
@@ -19,23 +20,30 @@ def height(t, sysout=False):
 	else:
 		h = 2900 - 62.468 * (t - 33) - 16.9274 * (t - 33) * (t - 33) + 0.41796 * (t - 33) * (t - 33) * (t - 33)
 
-	if sysout:
+	if sys_out:
 		print(f"height of the rocket at time {t} is {h} meters")
 
+	# returns float t and float h for convenience
 	return t, h
 
 
+# enables cmd line interface
+# USAGE python rocket_height.py [TIME_IN_FIGHT]
 if __name__ == "__main__":
 	if len(sys.argv) > 1:
-		t, myH = height(sys.argv[1], True)
-		plt.plot(t, myH, "o")
+		# adds point to plot and logs out to console the height at a given time
+		time, myH = height(sys.argv[1], True)
+		plt.plot(time, myH, "o")
 
+	# creates the graph
 	x = np.arange(50)
 	y = np.array([height(t, False)[1] for t in x])
-
 	plt.plot(x, y)
+
+	# labels graph
 	plt.title("--Rocket Height--")
 	plt.xlabel("time (s)")
 	plt.ylabel("height (m)")
 
+	# show graph, press 'q' to end
 	plt.show()
