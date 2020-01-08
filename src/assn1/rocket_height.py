@@ -1,7 +1,9 @@
 import sys
+import matplotlib.pyplot as plt
+import numpy as np
 
 
-def height(t):
+def height(t, sysout=False):
 	try:
 		t = float(t)
 	except ValueError:
@@ -17,8 +19,23 @@ def height(t):
 	else:
 		h = 2900 - 62.468 * (t - 33) - 16.9274 * (t - 33) * (t - 33) + 0.41796 * (t - 33) * (t - 33) * (t - 33)
 
-	print(f"height of the rocket at time {t} is {h} meters")
+	if sysout:
+		print(f"height of the rocket at time {t} is {h} meters")
+
+	return t, h
 
 
 if __name__ == "__main__":
-	height(sys.argv[1])
+	if len(sys.argv) > 1:
+		t, myH = height(sys.argv[1], True)
+		plt.plot(t, myH, "o")
+
+	x = np.arange(50)
+	y = np.array([height(t, False)[1] for t in x])
+
+	plt.plot(x, y)
+	plt.title("--Rocket Height--")
+	plt.xlabel("time (s)")
+	plt.ylabel("height (m)")
+
+	plt.show()
