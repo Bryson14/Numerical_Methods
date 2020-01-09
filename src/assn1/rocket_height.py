@@ -6,7 +6,8 @@ import numpy as np
 def height(t, sys_out=False):
 	# throws exception for input that is not a float type
 	try:
-		t = float(t)
+		if not isinstance(t, float):
+			t = float(t)
 	except ValueError:
 		print("Given time t is not a valid number.")
 		sys.exit(1)
@@ -36,7 +37,7 @@ if __name__ == "__main__":
 		plt.plot(time, myH, "o")
 
 	# creates the graph
-	x = np.arange(50)
+	x = np.arange(47, dtype='float')
 	y = np.array([height(t, False)[1] for t in x])
 	plt.plot(x, y)
 
