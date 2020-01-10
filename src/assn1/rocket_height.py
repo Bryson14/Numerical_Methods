@@ -31,15 +31,15 @@ def height(t, sys_out=False):
 # enables cmd line interface
 # USAGE python rocket_height.py [TIME_IN_FIGHT]
 if __name__ == "__main__":
+	# creates the graph
+	x = np.arange(48, dtype='float')
+	y = np.array([height(t, False)[1] for t in x])
+	plt.plot(x, y)
+
 	if len(sys.argv) > 1:
 		# adds point to plot and logs out to console the height at a given time
 		time, myH = height(sys.argv[1], True)
 		plt.plot(time, myH, "o")
-
-	# creates the graph
-	x = np.arange(47, dtype='float')
-	y = np.array([height(t, False)[1] for t in x])
-	plt.plot(x, y)
 
 	# labels graph
 	plt.title("--Rocket Height--")
