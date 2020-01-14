@@ -46,9 +46,9 @@ def get_sign(num):
 		return True
 
 
-def bisection(eq, graph=False):
+def bisection(eq, x, graph=False):
 	sym.plot(eq)
-	xlim = [0.0,0.0]
+	xlim = [0.0, 0.0]
 	xlim[0], xlim[1] = (input("Enter the range of numbers for the X BOUNDS to examine separated by a space: ")).split()
 	xlim[0], xlim[1] = float(xlim[0]), float(xlim[1])
 
@@ -107,18 +107,24 @@ def do_solve(eq):
 	return[sym.N(sol) for sol in sols]
 
 
+def parachutist(g, v, c, t, m):
+	eq = g * m * (1 - sym.exp(- c * t / m)) / c
+	return eq
+
+
 if __name__ == "__main__":
 
-	x, y = sym.symbols('x y')
+	x, y, m = sym.symbols('x y m')
 
 	eq1 = x*x*x*x*x - 10*x*x*x*x + 46*x*x*x - 90*x*x + 85*x - 31
 	eq2 = -3*x**3 + 20*x**2 - 20*x - 12
+	eq3 = parachutist(9.81, 36, 15, 10, x)
 	eq4 = 0.5*x**3 - 4*x**2 + 8*x - 1
 	eq5 = -3*x**3 + 20*x**2 - 20*x - 12
 	
-	# graphically(eq1)
-	print(bisection(eq1, graph=False))
-	print(do_solve(eq1))
+	graphically(eq3)
+	print(bisection(eq1,x, graph=False))
+	print(do_solve(eq3))
 
 
 
