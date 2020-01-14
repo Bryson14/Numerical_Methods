@@ -9,8 +9,7 @@ def dynamic_fib(n):
 	for i in range(2, n+1):
 		f[i] = f[i-1] + f[i-2]
 
-	ans = f[n]
-	return ans
+	return f[n]
 
 
 def recur_fib(n):
@@ -20,10 +19,10 @@ def recur_fib(n):
 
 
 start = time.time()
-# print(recur_fib(35))
-print(time.time() - start)
+print(recur_fib(30))
+print("time for recursive function: ", time.time() - start)
 mid = time.time()
 ans = dynamic_fib(10000)
 print(len(str(ans)))
 print(ans)
-print(time.time() - mid)
+print("time for dynamic function: ",time.time() - mid)

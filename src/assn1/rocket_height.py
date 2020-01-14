@@ -33,7 +33,7 @@ def height(t, sys_out=False):
 if __name__ == "__main__":
 	# creates the graph
 	x = np.arange(48, dtype='float')
-	y = np.array([height(t, False)[1] for t in x])
+	y = np.array([height(t)[1] for t in x])
 	plt.plot(x, y)
 
 	if len(sys.argv) > 1:
