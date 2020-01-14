@@ -78,10 +78,8 @@ def bisection(eq, graph=False):
 		# if mid and low are on other sides of the x axis
 		if mid_sign ^ low_sign:
 			high = mid
-			y_high = y_mid
 		elif mid_sign ^ high_sign:
 			low = mid
-			y_low = y_mid
 		else:
 			end = True
 
@@ -117,9 +115,6 @@ if __name__ == "__main__":
 	eq2 = -3*x**3 + 20*x**2 - 20*x - 12
 	eq4 = 0.5*x**3 - 4*x**2 + 8*x - 1
 	eq5 = -3*x**3 + 20*x**2 - 20*x - 12
-
-	# roots = sym.solve(eq1, x)
-	# print(roots)
 	
 	# graphically(eq1)
 	print(bisection(eq1, graph=False))
