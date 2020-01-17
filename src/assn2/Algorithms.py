@@ -23,41 +23,52 @@ VALID_INPUT = {
 		'Q': ['Quit the Program']
 	}
 
+
+def valid_input():
+	user_input = '?'
+	print("To change the view of the graph, enter: ")
+	while user_input not in VALID_INPUT:
+		for i in VALID_INPUT:
+			print('|', i, ':', VALID_INPUT[i][0], '|', sep=" ")
+		user_input = input('-->').upper()
+	return user_input
+
+
+def change_x():
+	low, high = input('Enter the new bounds for X\n-->').split()
+	low, high = float(low), float(high)
+	return [low, high]
+
+
+def change_y():
+	low, high = input('Enter the new bounds for Y\n-->').split()
+	low, high = float(low), float(high)
+	return [low, high]
+
+
 def graphically(eq):
+	sym.plot(eq)
+
 	end = False
 	xlim = [-50, 50]
-	ylim = [-50 , 50]
-
-
-	def valid_input():
-		pass
-
-	def change_x(inpt: str):
-		xlim[0], xlim[1] = inpt.split()
-		xlim[0], xlim[1] = float(xlim[0]), float(xlim[1])
-
-	def change_y(inpt: str):
-		ylim[0], ylim[1] = inpt.split()
-		ylim[0], ylim[1] = float(ylim[0]), float(ylim[1])
+	ylim = [-50, 50]
 
 	while not end:
-		sym.plot(eq, block=False, xlim=xlim, ylim=ylim)
-
-		valid_input()
-		change = input('to change the y bounds, enter y. To change the x bounds, enter x: ')
-		if change == 'y':
-			ylim[0], ylim[1] = (input("Enter the range of numbers to examine separated by a space: ")).split()
-			ylim[0], ylim[1] = float(ylim[0]), float(ylim[1])
-		elif change == 'x':
-			xlim[0], xlim[1] = (input("Enter the range of numbers to examine separated by a space: ")).split()
-			xlim[0], xlim[1] = float(xlim[0]), float(xlim[1])
-		elif change == 'xy' or change == 'x y':
-			xlim[0], xlim[1] = (input("Enter the range of numbers for X BOUNDS to examine separated by a space: ")).split()
-			xlim[0], xlim[1] = float(xlim[0]), float(xlim[1])
-			ylim[0], ylim[1] = (input("Enter the range of numbers for Y BOUNDS to examine separated by a space: ")).split()
-			ylim[0], ylim[1] = float(ylim[0]), float(ylim[1])
+		user_input = valid_input()
+		if user_input == 'X':
+			xlim = change_x()
+		elif user_input == 'Y':
+			ylim = change_y()
+		elif user_input == 'XY':
+			xlim = change_x()
+			ylim = change_y()
+		elif user_input == 'Q':
+			break
 		else:
-			end = True
+			continue
+			# replot
+
+		sym.plot(eq, block=False, xlim=xlim, ylim=ylim)
 
 
 def get_sign(num):
