@@ -3,8 +3,29 @@ import sys
 sym.init_printing(use_latex=True)
 
 
-def secant(eq):
-	pass
+def secant(eq, z):
+	# sym.plot(eq)
+	x_old, x_new = change_x('Enter 2 X bounds close to the root')
+	y_old = eq.subs({z: x_old})
+	y_new = eq.subs({z: x_new})
+
+	end = False
+
+	while not end:
+		slope = (y_new-y_old)/(x_new-x_old)
+		# b = y - mx
+		b = y_new - slope * x_new
+		# x = (y-b)/m
+		# find where the straight secant line crosses the x-axis
+		x_temp = (y_new - b) / slope
+		x_old, y_old = x_new, y_new
+		x_new, y_new = x_temp, eq.subs({z: x_temp})
+
+		# ending at maximum precision for float value
+		if abs(x_new - x_old) < 0.000000000000001:
+			end = True
+
+	return x_new
 
 
 def false_pos(eq):
@@ -16,11 +37,11 @@ def newton_raphson(eq):
 
 
 VALID_INPUT = {
-		'X': ['Change the x bounds'],
-		'Y': ['Change the y bounds'],
-		'XY': ['Change the x and y bounds'],
-		'R': ['Replot with the same bounds'],
-		'Q': ['Quit the Program']
+		'X': 'Change the x bounds',
+		'Y': 'Change the y bounds',
+		'XY': 'Change the x and y bounds',
+		'R': 'Replot with the same bounds',
+		'Q': 'Quit the Program'
 	}
 
 
@@ -29,19 +50,19 @@ def valid_input():
 	print("To change the view of the graph, enter: ")
 	while user_input not in VALID_INPUT:
 		for i in VALID_INPUT:
-			print('|', i, ':', VALID_INPUT[i][0], '|', sep=" ")
+			print('|', i, ':', VALID_INPUT[i], '|', sep=" ")
 		user_input = input('-->').upper()
 	return user_input
 
 
-def change_x():
-	low, high = input('Enter the new bounds for X\n-->').split()
+def change_x(mes='Enter the new bounds for X'):
+	low, high = input(mes + '\n-->').split()
 	low, high = float(low), float(high)
 	return [low, high]
 
 
-def change_y():
-	low, high = input('Enter the new bounds for Y\n-->').split()
+def change_y(mes='Enter the new bounds for Y'):
+	low, high = input(mes + '\n-->').split()
 	low, high = float(low), float(high)
 	return [low, high]
 
@@ -50,25 +71,25 @@ def graphically(eq):
 	sym.plot(eq)
 
 	end = False
-	xlim = [-50, 50]
-	ylim = [-50, 50]
+	x_lim = [-50, 50]
+	y_lim = [-50, 50]
 
 	while not end:
 		user_input = valid_input()
 		if user_input == 'X':
-			xlim = change_x()
+			x_lim = change_x()
 		elif user_input == 'Y':
-			ylim = change_y()
+			y_lim = change_y()
 		elif user_input == 'XY':
-			xlim = change_x()
-			ylim = change_y()
+			x_lim = change_x()
+			y_lim = change_y()
 		elif user_input == 'Q':
 			break
 		else:
 			continue
 			# replot
 
-		sym.plot(eq, block=False, xlim=xlim, ylim=ylim)
+		sym.plot(eq, block=False, xlim=x_lim, ylim=y_lim)
 
 
 def get_sign(num):
@@ -78,14 +99,9 @@ def get_sign(num):
 		return True
 
 
-def bisection(eq, x, graph=False):
+def bisection(eq, x: sym.Symbol, graph=False):
 	sym.plot(eq)
-	xlim = [0.0, 0.0]
-	xlim[0], xlim[1] = (input("Enter the range of numbers for the X BOUNDS to examine separated by a space: ")).split()
-	xlim[0], xlim[1] = float(xlim[0]), float(xlim[1])
-
-	low = xlim[0]
-	high = xlim[1]
+	low, high = change_x('Enter X bounds around root')
 	y_low = eq.subs({x: low})
 	y_high = eq.subs({x: high})
 
@@ -96,14 +112,17 @@ def bisection(eq, x, graph=False):
 	'''
 	low_sign = get_sign(y_low)
 	high_sign = get_sign(y_high)
-	if not low_sign ^ high_sign:
-		print("Not a simple root")
-		sys.exit()
 	mid = (high + low) / 2
 	end = False
+	i = 0
+
+	if not low_sign ^ high_sign:
+		print("Not a simple root/ Unable to center about a single root")
+		end = True
 
 	# stops looping if the root is found or floating point precision becomes significant
 	while not end:
+		i += 1
 		mid = (high + low) / 2
 		y_mid = eq.subs({x: mid})
 		mid_sign = get_sign(y_mid)
@@ -117,13 +136,14 @@ def bisection(eq, x, graph=False):
 			end = True
 
 		# 1 x 10^-15 to max out floating point precision
-		if abs((high - low)) < 0.00000000000001:
+		if abs(high - low) < 0.000000000000001:
 			end = True
 
 		if graph:
-			sym.plot(eq, xlim=[low,high])
+			sym.plot(eq, xlim=[low, high])
 		print(f"high {high}, low {low}")
 
+	print(f'iteration reached {i}')
 	return mid
 
 
@@ -161,18 +181,12 @@ def print_valid_algorithms():
 	return (input("-->")).upper()
 
 
-def algorithm_menu():
-	print("what algorithm would you like to use?")
-	user_input = '?'
-	while user_input not in VALID_ALGORITHMS:
-		user_input = print_valid_algorithms()
-	n = int(input("Enter the integer input for the algorithm:"))
-	print()
-	print("return value of", VALID_ALGORITHMS[user_input][0], "with n =", n, ":", VALID_ALGORITHMS[user_input][1](n))
-
-
 def get_algorithm():
 	userInput = '?'
 	while userInput not in VALID_ALGORITHMS:
 		userInput = print_valid_algorithms()
 	return VALID_ALGORITHMS[userInput][1]
+
+
+x = sym.Symbol('x')
+secant(x*x-2, x)
