@@ -32,8 +32,29 @@ def false_pos(eq):
 	pass
 
 
-def newton_raphson(eq):
-	pass
+def newton_raphson(eq, z):
+	# sym.plot(eq)
+	x_old = float(input('Enter an x value close to the root'))
+	y = eq.subs({z: x_old})
+	deriv = sym.diff(eq, z)
+
+	end = False
+
+	while not end:
+		slope = deriv.subs({z: x_old})
+		# b = y - mx
+		b = y - slope * x_old
+		# x = (y-b)/m
+		# find where the straight secant line crosses the x-axis
+		x_temp = (y - b) / slope
+
+		# ending at maximum precision for float value
+		if abs(x_old - x_temp) < 0.000000000000001:
+			end = True
+
+		x_old, y = x_temp, eq.subs({z: x_temp})
+
+	return x_old
 
 
 VALID_INPUT = {
@@ -143,7 +164,7 @@ def bisection(eq, x: sym.Symbol, graph=False):
 			sym.plot(eq, xlim=[low, high])
 		print(f"high {high}, low {low}")
 
-	print(f'iteration reached {i}')
+	print(f'iteration reached {i} loops')
 	return mid
 
 
@@ -170,7 +191,8 @@ VALID_ALGORITHMS = {
 	'F': ['False Position Method', false_pos],
 	'N': ['Newton-Raphson Method', newton_raphson],
 	'C': ['Secant Method', secant],
-	'M': ['Parse an Equation', make_eq]
+	'M': ['Parse an Equation', make_eq],
+	'Q': ['Quit the Program']
 }
 
 
@@ -185,8 +207,7 @@ def get_algorithm():
 	userInput = '?'
 	while userInput not in VALID_ALGORITHMS:
 		userInput = print_valid_algorithms()
+	if userInput == 'Q':
+		sys.exit()
 	return VALID_ALGORITHMS[userInput][1]
 
-
-x = sym.Symbol('x')
-secant(x*x-2, x)
