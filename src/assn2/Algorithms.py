@@ -3,58 +3,11 @@ import sys
 sym.init_printing(use_latex=True)
 
 
-def secant(eq, z):
-	# sym.plot(eq)
-	x_old, x_new = change_x('Enter 2 X bounds close to the root')
-	y_old = eq.subs({z: x_old})
-	y_new = eq.subs({z: x_new})
-
-	end = False
-
-	while not end:
-		slope = (y_new-y_old)/(x_new-x_old)
-		# b = y - mx
-		b = y_new - slope * x_new
-		# x = (y-b)/m
-		# find where the straight secant line crosses the x-axis
-		x_temp = (y_new - b) / slope
-		x_old, y_old = x_new, y_new
-		x_new, y_new = x_temp, eq.subs({z: x_temp})
-
-		# ending at maximum precision for float value
-		if abs(x_new - x_old) < 0.000000000000001:
-			end = True
-
-	return x_new
-
-
-def false_pos(eq):
-	pass
-
-
-def newton_raphson(eq, z):
-	# sym.plot(eq)
-	x_old = float(input('Enter an x value close to the root'))
-	y = eq.subs({z: x_old})
-	deriv = sym.diff(eq, z)
-
-	end = False
-
-	while not end:
-		slope = deriv.subs({z: x_old})
-		# b = y - mx
-		b = y - slope * x_old
-		# x = (y-b)/m
-		# find where the straight secant line crosses the x-axis
-		x_temp = (y - b) / slope
-
-		# ending at maximum precision for float value
-		if abs(x_old - x_temp) < 0.000000000000001:
-			end = True
-
-		x_old, y = x_temp, eq.subs({z: x_temp})
-
-	return x_old
+def get_sign(num):
+	if num * -1 > num:
+		return False
+	else:
+		return True
 
 
 VALID_INPUT = {
@@ -88,12 +41,109 @@ def change_y(mes='Enter the new bounds for Y'):
 	return [low, high]
 
 
-def graphically(eq):
+def secant(eq, z, error_bound):
+	# x_temp = x(i+1) , x_new = x(i), x_old = x(i-1)
+	sym.plot(eq)
+	x_old, x_new = change_x('Enter 2 X bounds close to the root: ')
+
+	end = False
+
+	while not end:
+		y_old = eq.subs({z: x_old})
+		y_new = eq.subs({z: x_new})
+
+		x_temp = x_new - (y_new * (x_old - x_new)) / (y_old - y_new)
+
+		x_old, y_old = x_new, y_new
+		x_new, y_new = x_temp, eq.subs({z: x_temp})
+
+		# ending at the user specified percent error
+		error_approx = 100 * (x_new - x_old) / x_new
+		if abs(error_approx) < error_bound:
+			end = True
+			print(f"approximate error is {abs(error_approx)} %")
+
+	return x_new
+
+
+def false_pos(eq, z, error_bound):
+	# x_temp = x(i+1) , x_new = x(i), x_old = x(i-1)
+	sym.plot(eq)
+	x_old, x_new = change_x('Enter 2 X bounds that bracket to the root: ')
+
+	end = False
+
+	while not end:
+		y_old = eq.subs({z: x_old})
+		y_new = eq.subs({z: x_new})
+		old_sign = get_sign(y_old)
+		new_sign = get_sign(y_new)
+
+		if not (old_sign ^ new_sign):
+			print(f"Bounds {x_old} and {x_new} don't bracket the root")
+			sys.exit()
+
+		x_temp = x_new - (y_new * (x_old - x_new)) / (y_old - y_new)
+		y_temp = eq.subs({z: x_temp})
+		temp_sign = get_sign(y_temp)
+
+		# the only difference between secant and false position method is that
+
+		# if temp and old are on other sides of the x axis, the Old stays the same and temp becomes new
+		if old_sign ^ temp_sign:
+			x_new, y_new = x_temp, y_temp
+			error_approx = 100 * (x_new - x_old) / x_new
+
+		# if new and temp are on opposite side of the x axis, new become the old, and temp becomes new
+		elif new_sign ^ temp_sign:
+			x_old, y_old = x_new, y_new
+			x_new, y_new = x_temp, y_temp
+			error_approx = 100 * (x_new - x_old) / x_new
+
+		# bounds don't bracket the root
+		else:
+			end = True
+			print("Not a simple root/ Unable to center about a single root")
+			error_approx = 1000
+
+		# ending at the user specified percent error
+		error_approx = 100 * (x_new - x_old) / x_new
+		if abs(error_approx) < error_bound:
+			end = True
+			print(f"approximate error is {abs(error_approx)} %")
+
+	return x_new
+
+
+def newton_raphson(eq, z, error_bound):
+	# sym.plot(eq)
+	x_old = float(input('Enter an x value close to the root: '))
+	y = eq.subs({z: x_old})
+	deriv = sym.diff(eq, z)
+
+	end = False
+
+	while not end:
+		slope = deriv.subs({z: x_old})
+		x_temp = x_old - y/slope
+
+		# ending at the user specified percent error
+		error_approx = 100 * (x_temp - x_old) / x_temp
+		if abs(error_approx) < error_bound:
+			end = True
+
+		x_old, y = x_temp, eq.subs({z: x_temp})
+
+	print(f"approximate Error is {abs(error_approx)} %")
+	return x_old
+
+
+def graphically(eq, z, error_bound):
 	sym.plot(eq)
 
 	end = False
-	x_lim = [-50, 50]
-	y_lim = [-50, 50]
+	x_lim = [-30, 30]
+	y_lim = [-30, 30]
 
 	while not end:
 		user_input = valid_input()
@@ -113,16 +163,9 @@ def graphically(eq):
 		sym.plot(eq, block=False, xlim=x_lim, ylim=y_lim)
 
 
-def get_sign(num):
-	if num * -1 > num:
-		return False
-	else:
-		return True
-
-
-def bisection(eq, x: sym.Symbol, graph=False):
+def bisection(eq, x: sym.Symbol, error_bound, graph=False):
 	sym.plot(eq)
-	low, high = change_x('Enter X bounds around root')
+	low, high = change_x('Enter X bounds that bracket the root: ')
 	y_low = eq.subs({x: low})
 	y_high = eq.subs({x: high})
 
@@ -151,26 +194,25 @@ def bisection(eq, x: sym.Symbol, graph=False):
 		# if mid and low are on other sides of the x axis
 		if mid_sign ^ low_sign:
 			high = mid
+			error_approx = 100 * (low - mid) / mid
 		elif mid_sign ^ high_sign:
 			low = mid
+			error_approx = 100 * (high - mid) / mid
 		else:
 			end = True
+			error_approx = 0.0
 
 		# 1 x 10^-15 to max out floating point precision
-		if abs(high - low) < 0.000000000000001:
+
+		if abs(error_approx) < error_bound:
 			end = True
 
 		if graph:
 			sym.plot(eq, xlim=[low, high])
 		print(f"high {high}, low {low}")
 
-	print(f'iteration reached {i} loops')
+	print(f'iteration reached {i} loops. Approximate Error is {error_approx}%')
 	return mid
-
-
-def make_eq(arg: str):
-	eq = None
-	return eq
 
 
 def do_solve(eq):
@@ -191,7 +233,6 @@ VALID_ALGORITHMS = {
 	'F': ['False Position Method', false_pos],
 	'N': ['Newton-Raphson Method', newton_raphson],
 	'C': ['Secant Method', secant],
-	'M': ['Parse an Equation', make_eq],
 	'Q': ['Quit the Program']
 }
 
