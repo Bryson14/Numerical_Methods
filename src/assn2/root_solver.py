@@ -1,8 +1,16 @@
-import numpy as np
-import sys
-import re
 from assn2.Algorithms import *
 import sympy as sym
+
+
+def valid_input():
+	user_input = -1
+	print("Enter a Error Approximation to stop at: ")
+	while 100 > user_input < 0:
+		try:
+			user_input = float(input('-->:\t'))
+		except ValueError:
+			valid_input()
+	return user_input
 
 
 if __name__ == "__main__":
@@ -16,6 +24,7 @@ if __name__ == "__main__":
 	eq5 = -3*x**3 + 20*x**2 - 20*x - 12
 	
 	func = get_algorithm()
-	print(func(eq1, x, 0.2))
-	print(do_solve(eq1))
+	print(func(eq3, x, valid_input()))
+	# print(do_solve(eq3))
+
 

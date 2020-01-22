@@ -30,7 +30,7 @@ def valid_input():
 
 
 def change_x(mes='Enter the new bounds for X'):
-	low, high = input(mes + '\n-->').split()
+	low, high = input(mes + '\n--> ').split()
 	low, high = float(low), float(high)
 	return [low, high]
 
@@ -70,12 +70,14 @@ def false_pos(eq, z, error_bound):
 	# x_temp = x(i+1) , x_new = x(i), x_old = x(i-1)
 	sym.plot(eq)
 	x_old, x_new = change_x('Enter 2 X bounds that bracket to the root: ')
+	y_old = eq.subs({z: x_old})
+	y_new = eq.subs({z: x_new})
 
 	end = False
+	i = 0
 
 	while not end:
-		y_old = eq.subs({z: x_old})
-		y_new = eq.subs({z: x_new})
+		i += 1
 		old_sign = get_sign(y_old)
 		new_sign = get_sign(y_new)
 
@@ -91,26 +93,27 @@ def false_pos(eq, z, error_bound):
 
 		# if temp and old are on other sides of the x axis, the Old stays the same and temp becomes new
 		if old_sign ^ temp_sign:
+			error_approx = 100 * (x_temp - x_new) / x_temp
 			x_new, y_new = x_temp, y_temp
-			error_approx = 100 * (x_new - x_old) / x_new
 
 		# if new and temp are on opposite side of the x axis, new become the old, and temp becomes new
 		elif new_sign ^ temp_sign:
+			error_approx = 100 * (x_temp - x_old) / x_temp
 			x_old, y_old = x_new, y_new
 			x_new, y_new = x_temp, y_temp
-			error_approx = 100 * (x_new - x_old) / x_new
 
 		# bounds don't bracket the root
 		else:
 			end = True
 			print("Not a simple root/ Unable to center about a single root")
-			error_approx = 1000
+			error_approx = 0.0
+
+		# print(f"x_i = {x_new}, and x_i-1 = {x_old}, iterations = {i}")
 
 		# ending at the user specified percent error
-		error_approx = 100 * (x_new - x_old) / x_new
 		if abs(error_approx) < error_bound:
 			end = True
-			print(f"approximate error is {abs(error_approx)} %")
+			print(f"approximate error is {abs(error_approx)} % \n iterations = {i}")
 
 	return x_new
 
@@ -221,7 +224,7 @@ def do_solve(eq):
 
 
 def parachutist(g, v, c, t, m):
-	eq = g * m * (1 - sym.exp(- c * t / m)) / c
+	eq = (g * m * (1 - sym.exp(- c * t / m)) / c) - v
 	return eq
 
 
