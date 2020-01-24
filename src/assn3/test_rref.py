@@ -1,9 +1,9 @@
 from unittest import TestCase
 import numpy as np
-from .rref import get_pivot
+from rref import get_pivot
 
 
-class test_get_pivot(TestCase):
+class test_Get_Pivot(TestCase):
 	def test_get_pivot(self):
 		a = np.array([
 			[1, 2, 3],

@@ -172,6 +172,10 @@ def bisection(eq, x: sym.Symbol, error_bound, graph=False):
 	y_low = eq.subs({x: low})
 	y_high = eq.subs({x: high})
 
+	# bounds are symmetric about the x axis, then add a small amount to avoid divide by zero error
+	if low * -1 == high:
+		low -= 0.0000001
+
 	'''
 	True means positive and False is negative.
 	This will be used to determine where is the function crosses
@@ -212,13 +216,13 @@ def bisection(eq, x: sym.Symbol, error_bound, graph=False):
 
 		if graph:
 			sym.plot(eq, xlim=[low, high])
-		print(f"high {high}, low {low}")
+		# print(f"high {high}, low {low}")
 
 	print(f'iteration reached {i} loops. Approximate Error is {error_approx}%')
 	return mid
 
 
-def do_solve(eq):
+def do_solve(eq, x, error):
 	sols = sym.solve(eq)
 	return[sym.N(sol) for sol in sols]
 
@@ -229,13 +233,12 @@ def parachutist(g, v, c, t, m):
 
 
 VALID_ALGORITHMS = {
-	'S': ['Solve with Sympy', do_solve],
 	'B': ['Bisection Method', bisection],
-	'P': ['Make Equation for Parachutist Problem', parachutist],
 	'G': ['Graphic Method', graphically],
 	'F': ['False Position Method', false_pos],
 	'N': ['Newton-Raphson Method', newton_raphson],
-	'C': ['Secant Method', secant],
+	'S': ['Secant Method', secant],
+	'P': ['Solve with Sympy', do_solve],
 	'Q': ['Quit the Program']
 }
 
@@ -248,10 +251,10 @@ def print_valid_algorithms():
 
 
 def get_algorithm():
-	userInput = '?'
-	while userInput not in VALID_ALGORITHMS:
-		userInput = print_valid_algorithms()
-	if userInput == 'Q':
+	user_input = '?'
+	while user_input not in VALID_ALGORITHMS:
+		user_input = print_valid_algorithms()
+	if user_input == 'Q':
 		sys.exit()
-	return VALID_ALGORITHMS[userInput][1]
+	return VALID_ALGORITHMS[user_input][1]
 
