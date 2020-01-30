@@ -65,7 +65,8 @@ def get_pivot(arr, col: int, completed_rows)->int:
 # used to make a matrix RREF
 def zero_col(arr, pivot_col, pivot, show_steps=False):
 	# dividing everything py the pivot
-	arr[pivot] = arr[pivot] / arr[pivot][pivot_col]
+	pivot_val = arr[pivot][pivot_col]
+	arr[pivot] = arr[pivot] / pivot_val
 	if show_steps:
 		print(f"R{pivot+1} / {pivot_val}")
 		print(arr)
@@ -78,7 +79,7 @@ def zero_col(arr, pivot_col, pivot, show_steps=False):
 
 			if show_steps:
 				# adding one to the row printout for better math notation
-				print(f"R{row+1} - {row_value} R{pivot+1}")
+				print(f"R{row+1} - {row_value}*R{pivot+1}")
 			arr[row] = arr[row] - row_value * arr[pivot]
 
 			if show_steps:
@@ -147,10 +148,26 @@ def forward_elimination(arr, show_steps=False):
 	return arr
 
 
-# assumes that arr is already in a upper triangle
-def backsub(arr, show_steps=False):
+# assumes that arr is already in a upper triangle with a main diagonal of ones
+def back_substitute(arr, show_steps=False):
 	solutions = {}
 	for i in range(arr.shape[0]-1, -1, -1):
+		sum_of_other_terms = 0.0
+		for sol in solutions:
+			sum_of_other_terms += arr[i][sol] * solutions[sol]
+
+		x = arr[i][-1] - sum_of_other_terms
+
+		if show_steps:
+			print(f"X{i} is {x}")
+		solutions[i] = x
+
+	return solutions
+
+# assumes that arr is already in a lower triangle with a main diagonal of ones
+def forward_substitute(arr, show_steps=False):
+	solutions = {}
+	for i in range(arr.shape[0]):
 		sum_of_other_terms = 0.0
 		for sol in solutions:
 			sum_of_other_terms += arr[i][sol] * solutions[sol]
@@ -165,11 +182,22 @@ def backsub(arr, show_steps=False):
 
 def gauss_jordan_elimination(arr, show_steps=False):
 	arr = forward_elimination(arr, show_steps)
-	solutions = backsub(arr, show_steps)
+	solutions = back_substitute(arr, show_steps)
 	return solutions
 
 
 # assumes the arr is already in a upper triangle
 def lu_decomposition(arr, show_steps=False):
 	arr = forward_elimination(arr, show_steps)
+	print(arr)
 
+# arr must be square to have an inverse
+def inverse(arr):
+	inv = np.zeros(arr.shape, dtype=float)
+	identity = np.identity(arr.shape[0])
+
+
+	#L Z = C_v
+	# forward solve for the z vector three times for the three vectors of the identity matrix (C)
+	# U X = Z
+	# back solve for x, where x is the identity vector
