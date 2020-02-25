@@ -43,14 +43,13 @@ four_rh = np.array([
 	[-20]
 ])
 five = np.array([
-	[3,1,8,-2],
-	[-4,-2,1,0],
-	[8,-9,2,1],
-	[5,9,5,0]
+	[3,   1, 8, -2],
+	[-4, -2, 1,  0],
+	[8,  -9, 2,  1],
+	[5,   9, 5,  0]
 ])
 
 arrays = [one, two, three, four, four_rh, five]
 
 # print(sol_lu_decomposition(three, three_rh))
 print(inverse(three))
-# print(np.dot(three, inverse(three)))
