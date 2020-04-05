@@ -1,13 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 def func(x):
     return 3 * np.power(x, 2) + 5*x - 7
-
-# Enter Bounds Here and Number of SubIntervals
-a = 0
-b = 5
-n = 100
 
 def trap_integration(a, b, n, function):
     # creates the step size
