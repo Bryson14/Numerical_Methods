@@ -51,5 +51,5 @@ five = np.array([
 
 arrays = [one, two, three, four, four_rh, five]
 
-# print(sol_lu_decomposition(three, three_rh))
-print(inverse(three))
+print(sol_lu_decomposition(three, three_rh))
+# print(inverse(three))
