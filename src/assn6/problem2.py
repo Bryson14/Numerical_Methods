@@ -22,6 +22,7 @@ def euler(inital_v, initial_y, step):
 
     print(f"Object hit the ground at approximately {times[-1]} seconds")
     make_plot(times, positions, velocities, "Position/ Velocity Approximation using Euler's Method")
+    return times, positions, velocities
 
 '''
 ODE representing the downward acceleration of a falling object.
@@ -62,6 +63,49 @@ def make_plot(time, position, velocity, title):
 
     ax1.set_title(title)
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
+    # fig.savefig("RK4 Method Falling Object.png")
     plt.show()
 
-euler(0, 2000, .0001)
+'''
+Runge-Kutta Method is a better version basically of Euler's Method.
+ t takes four different approximations at each step, then makes the next step an average of the four approximations.
+
+'''
+def runge_kutta(inital_v, initial_y, step):
+    curr_y = initial_y
+    positions = [curr_y]
+    times = [0]
+    velocities = [inital_v]
+    index = 0
+    '''
+    Naming Scheme: 
+    vel_1 -> velocity approximation 1
+    pos_1 -> position approximation 1
+    '''
+    while curr_y > 0:  # hasn't hit the ground yet
+
+        pos_1 = falling_vel(velocities[index])
+        vel_1 = falling_acc(velocities[index])
+
+        pos_2 = falling_vel(velocities[index] + 0.5 * step * vel_1)
+        vel_2 = falling_acc(velocities[index] + 0.5 * step * vel_1)
+
+        pos_3 = falling_vel(velocities[index] + 0.5 * step * vel_2)
+        vel_3 = falling_acc(velocities[index] + 0.5 * step * vel_2)
+
+        pos_4 = falling_vel(velocities[index] + step * vel_3)
+        vel_4 = falling_acc(velocities[index] + step * vel_3)
+
+        velocities.append(velocities[index] + (vel_1 + 2*vel_2 + 2*vel_3 + vel_4) * step / 6)
+        positions.append(positions[index] + (pos_1 + 2*pos_2 + 2*pos_3 + pos_4) * step / 6)
+        times.append(index * step)
+        curr_y = positions[index + 1]
+        index += 1
+
+    print(f"Object hit the ground at approximately {times[-1]} seconds")
+    make_plot(times, positions, velocities, "Position/ Velocity Approximation using Runge-Kutta 4 Approximation")
+    return times, positions, velocities
+
+
+runge_kutta(0, 2000, .001)
+# euler(0, 2000, 0.001)
