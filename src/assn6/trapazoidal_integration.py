@@ -1,10 +1,6 @@
 import numpy as np
 import time
 
-def func(x, y):
-    return 3 * np.power(x, 2) + 5*x*y - 6 * y - 7
-# int_0^1 (int_0^1 func dx)dy = -7.75
-
 def double_trap_integration(a, b, c, d, n, function):
 
     step = (d - c) / n
