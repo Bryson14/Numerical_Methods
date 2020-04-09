@@ -23,7 +23,7 @@ dv/dt = -(cv +  kx) / m
 def acc(v, x):
     m = 10  # mass
     k = 12  # spring constant
-    c = 3  # damping
+    c = 50  # damping
     return -(c*v + k*x) / m
 
 
@@ -55,6 +55,7 @@ def make_plot(time, position, velocity, title):
 
     ax1.set_title(title)
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
+    # fig.savefig("RK4 Method Spring System overdamped small step.png")
     plt.show()
 
 
@@ -89,7 +90,8 @@ def runge_kutta(initial_v, initial_y, step, end):
         velocities.append(velocities[index] + (vel_1 + 2*vel_2 + 2*vel_3 + vel_4) * step / 6)
         positions.append(positions[index] + (pos_1 + 2*pos_2 + 2*pos_3 + pos_4) * step / 6)
 
-    make_plot(times, positions[:-1], velocities[:-1], "Position/ Velocity Approximation using Runge-Kutta 4 Approximation")
+    make_plot(times, positions[:-1], velocities[:-1],
+              "Position/ Velocity Approximation using Runge-Kutta 4 Approximation")
     return times, positions, velocities
 
 
